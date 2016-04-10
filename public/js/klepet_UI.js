@@ -1,5 +1,6 @@
 function divElementEnostavniTekst(sporocilo) {
-  
+/*<<<<<<< HEAD*/
+  /*
   var jeYoutube = sporocilo.indexOf('<iframe') > -1;
   
   var jeSlika = sporocilo.indexOf('<img ') > -1;
@@ -14,7 +15,25 @@ function divElementEnostavniTekst(sporocilo) {
   else {
     return $('<div style="font-weight: bold;"></div>').text(sporocilo);
   }
-  
+  */
+/*=======*/
+  var jeSlika = sporocilo.indexOf('<img ') > -1;
+  var jeYoutube = sporocilo.indexOf('<iframe') > -1;
+  var jeSmesko = sporocilo.indexOf('http://sandbox.lavbic.net/teaching/OIS/gradivo/') > -1;
+  sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;');
+  if (jeSmesko||jeSlika) {
+    sporocilo=sporocilo.replace(/&lt;img/g, '<img').replace(/jpg' \/&gt;/g, "jpg ' />").replace(/gif' \/&gt;/g, "gif ' />").replace(/png' \/&gt;/g, "png' />");
+    
+  } 
+  if (jeYoutube) {
+    sporocilo = sporocilo.replace(/&lt;iframe/g, "<iframe").replace(/allowfullscreen&gt;/g,"allowfullscreen>").replace(/&lt;\/iframe&gt;/g,"</iframe>");
+  }
+  console.log(sporocilo);
+  if(jeYoutube || jeSmesko || jeSlika){
+    return $('<div style="font-weight: bold"></div>').html(sporocilo);
+  }
+  else return $('<div style="font-weight: bold;"></div>').text(sporocilo);
+/*>>>>>>> youtube*/
 }
 
 function divElementHtmlTekst(sporocilo) {
@@ -23,7 +42,11 @@ function divElementHtmlTekst(sporocilo) {
 
 function procesirajVnosUporabnika(klepetApp, socket) {
   var sporocilo = $('#poslji-sporocilo').val();
+/*<<<<<<< HEAD*/
   sporocilo = dodajSlike(sporocilo);
+/*=======*/
+  sporocilo = dodajYoutube(sporocilo);
+/*>>>>>>> youtube*/
   sporocilo = dodajSmeske(sporocilo);
   var sistemskoSporocilo;
 
@@ -148,6 +171,7 @@ function dodajSmeske(vhodnoBesedilo) {
   return vhodnoBesedilo;
 }
 
+/*<<<<<<< HEAD*/
 function dodajSlike(vhodnoBesedilo){
   var exp = vhodnoBesedilo.match(new RegExp("https?:\/\/[^ ]*\.(?:gif|png|jpg|jpeg)", "gi"));
   var dodatek = '';
@@ -157,5 +181,18 @@ function dodajSlike(vhodnoBesedilo){
     }
   }
   vhodnoBesedilo += dodatek;
+  return vhodnoBesedilo;
+}
+/*=======*/
+function dodajYoutube(vhodnoBesedilo){
+  var expe = vhodnoBesedilo.match(new RegExp(/https?:\/\/www\.youtube\.com\/watch\?v=[^ ]*/gi));
+  var dodatekk = '';
+  if (expe != null){
+    for(y in expe){
+      dodatekk +=  '<iframe src=\"https://www.youtube.com/embed/' +expe[y].split("=")[1]+'\" allowfullscreen></iframe>';
+    }
+  }
+  vhodnoBesedilo += dodatekk;
+/*>>>>>>> youtube*/
   return vhodnoBesedilo;
 }
